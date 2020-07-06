@@ -1,10 +1,14 @@
 package com.example.instagramclone;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.example.instagramclone.models.Post;
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
