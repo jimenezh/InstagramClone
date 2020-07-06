@@ -1,15 +1,19 @@
 package com.example.instagramclone;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.instagramclone.databinding.ActivityLoginBinding;
@@ -17,6 +21,7 @@ import com.example.instagramclone.databinding.ActivityMainBinding;
 import com.example.instagramclone.models.Post;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -46,8 +51,10 @@ public class MainActivity extends AppCompatActivity {
                 String description = binding.etDescription.getText().toString();
                 if(description.isEmpty())
                     Toast.makeText(MainActivity.this,"Description cannot be empty", Toast.LENGTH_SHORT).show();
+                else if(photoFile == null || binding.ivPostImage.getDrawable() == null)
+                    Toast.makeText(MainActivity.this, "No image!", Toast.LENGTH_SHORT).show();
                 else
-                    savePost(description, ParseUser.getCurrentUser());
+                    savePost(description, ParseUser.getCurrentUser(), photoFile);
             }
         });
 
@@ -60,11 +67,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void savePost(String description, ParseUser currentUser) {
+    private void savePost(String description, ParseUser currentUser, File photoFile) {
         Post p = new Post();
         p.setDescription(description);
 //        p.setImage();
         p.setUser(currentUser);
+        p.setImage(new ParseFile(photoFile));
         p.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -131,5 +139,21 @@ public class MainActivity extends AppCompatActivity {
         File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
 
         return file;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // by this point we have the camera photo on disk
+                Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                // RESIZE BITMAP, see section below
+                // Load the taken image into a preview
+                binding.ivPostImage.setImageBitmap(takenImage);
+            } else { // Result was a failure
+                Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
