@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.example.instagramclone.databinding.ActivityLoginBinding;
 import com.example.instagramclone.databinding.ActivityMainBinding;
@@ -11,6 +13,8 @@ import com.example.instagramclone.models.Post;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.List;
 
@@ -25,8 +29,37 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        queryPosts();
+//        queryPosts();
+        binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String description = binding.etDescription.getText().toString();
+                if(description.isEmpty())
+                    Toast.makeText(MainActivity.this,"Description cannot be empty", Toast.LENGTH_SHORT).show();
+                else
+                    savePost(description, ParseUser.getCurrentUser());
+            }
+        });
 
+    }
+
+    private void savePost(String description, ParseUser currentUser) {
+        Post p = new Post();
+        p.setDescription(description);
+//        p.setImage();
+        p.setUser(currentUser);
+        p.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e != null) {
+                    Log.e(TAG, "Error saving post", e);
+                    return;
+                }
+                Log.i(TAG, "Posted!");
+                Toast.makeText(MainActivity.this, "Posted",Toast.LENGTH_SHORT).show();
+                binding.etDescription.setText("");
+            }
+        });
     }
 
     private void queryPosts() {
