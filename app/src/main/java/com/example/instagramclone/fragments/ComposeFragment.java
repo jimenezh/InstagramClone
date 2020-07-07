@@ -125,23 +125,6 @@ public class ComposeFragment extends Fragment {
         binding = null;
     }
 
-    private void queryPosts() {
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        query.include(Post.KEY_USER);
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> posts, ParseException e) {
-                if(e != null){
-                    Log.e(TAG, "Error in query", e);
-                    return;
-                }
-                for(Post p : posts){
-                    Log.i(TAG,p.getDescription());
-                }
-            }
-        });
-    }
-
     public void launchCamera() {
         // create Intent to take a picture and return control to the calling application
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

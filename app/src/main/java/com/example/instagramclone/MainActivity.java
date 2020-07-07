@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.instagramclone.adapters.PostsAdapter;
 import com.example.instagramclone.databinding.ActivityLoginBinding;
 import com.example.instagramclone.databinding.ActivityMainBinding;
 import com.example.instagramclone.fragments.ComposeFragment;
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setBottomNavigationListener();
 
     }
