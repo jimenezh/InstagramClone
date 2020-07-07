@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +22,9 @@ import android.widget.Toast;
 
 import com.example.instagramclone.databinding.ActivityLoginBinding;
 import com.example.instagramclone.databinding.ActivityMainBinding;
+import com.example.instagramclone.fragments.ComposeFragment;
+import com.example.instagramclone.fragments.PostFragment;
+import com.example.instagramclone.fragments.ProfileFragment;
 import com.example.instagramclone.models.Post;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.FindCallback;
@@ -36,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
     public static final String TAG = "MainActivity";
+    final FragmentManager fragmentManager = getSupportFragmentManager();
+    final PostFragment postFragment = new PostFragment();
+    final ComposeFragment composeFragment = new ComposeFragment();
+    final ProfileFragment profileFragment = new ProfileFragment();
 
 
     @Override
@@ -52,21 +61,24 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment fragment = null;
                 switch (item.getItemId()) {
                     case R.id.action_home:
-                        // do something here
+                        fragment = postFragment;
                         break;
                     case R.id.action_camera:
-                        // do something here
+                        fragment = composeFragment;
                         break;
                     case R.id.action_profile:
-                        // do something here
+                        fragment = profileFragment;
                         break;
-                    default: break;
+                    default:
+                        break;
                 }
-
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
                 return true;
             }
         });
+        binding.bottomNavigation.setSelectedItemId(R.id.action_home);
     }
 }
