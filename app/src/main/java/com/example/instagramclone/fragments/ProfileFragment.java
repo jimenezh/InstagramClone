@@ -1,17 +1,26 @@
 package com.example.instagramclone.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.instagramclone.LoginActivity;
 import com.example.instagramclone.R;
+import com.example.instagramclone.databinding.FragmentComposeBinding;
+import com.example.instagramclone.databinding.FragmentProfileBinding;
 import com.example.instagramclone.models.Post;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -19,31 +28,37 @@ import com.parse.ParseUser;
 import java.util.List;
 
 
-public class ProfileFragment extends PostFragment {
+public class ProfileFragment extends Fragment {
 
-    private final String TAG ="PostFragment";
+    private final String TAG = "PostFragment";
+    FragmentProfileBinding binding;
+    FragmentManager fragmentManager;
+
+    public ProfileFragment() {
+    }
 
     @Override
-    protected void queryPosts() {
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        query.include(Post.KEY_USER);
-        query.setLimit(POST_LIMIT); // Get only 20 posts
-        query.addDescendingOrder(Post.KEY_CREATED_AT); // Orders from most recent to least recent
-        query.whereEqualTo(Post.KEY_USER, ParseUser.getCurrentUser());
-        query.findInBackground(new FindCallback<Post>() {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        binding = FragmentProfileBinding.inflate(getLayoutInflater(), container, false);
+        // Setting up fragments for user pictures
+        fragmentManager = getChildFragmentManager();
+        PostFragment postFragment = new PostFragment();
+        postFragment.filterByUser = ParseUser.getCurrentUser();
+        fragmentManager.beginTransaction().replace(R.id.flPics, postFragment).commit();
+        // Sign out
+        binding.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void done(List<Post> results, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Error in query", e);
-                    return;
-                }
-                for (Post p : results) {
-                    Log.i(TAG, p.getDescription());
-                }
-                posts.addAll(results); // adding posts to class field
-                Log.i(TAG, String.valueOf(posts.size()));
-                adapter.notifyDataSetChanged();
+            public void onClick(View view) {
+                ParseUser.logOut();
+                Toast.makeText(getContext(),"User logged out",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(intent);
+                getActivity().finish();
             }
         });
+        return binding.getRoot();
     }
 }

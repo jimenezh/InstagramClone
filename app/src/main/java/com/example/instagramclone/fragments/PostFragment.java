@@ -35,6 +35,7 @@ public class PostFragment extends Fragment {
     private static final String TAG = "PostFragment";
     protected final int  POST_LIMIT = 20;
 
+    protected ParseUser filterByUser;
 
     public PostFragment() {
         // Required empty public constructor
@@ -65,6 +66,9 @@ public class PostFragment extends Fragment {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
         query.setLimit(POST_LIMIT); // Get only 20 posts
+        if(filterByUser != null) {
+            query.whereEqualTo(Post.KEY_USER, filterByUser);
+        }
         query.addDescendingOrder(Post.KEY_CREATED_AT); // // Orders from most recent to least recent
         query.findInBackground(new FindCallback<Post>() {
             @Override
@@ -81,5 +85,11 @@ public class PostFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }
