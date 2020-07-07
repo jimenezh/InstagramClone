@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     public static final String TAG = "MainActivity";
     final FragmentManager fragmentManager = getSupportFragmentManager();
+    // Fragments for tab navigation
     final PostFragment postFragment = new PostFragment();
     final ComposeFragment composeFragment = new ComposeFragment();
     final ProfileFragment profileFragment = new ProfileFragment();
@@ -54,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setBottomNavigationListener();
-
     }
 
     private void setBottomNavigationListener() {
+        // Changes frame layout to appropriate fragment
         binding.bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -80,5 +81,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         binding.bottomNavigation.setSelectedItemId(R.id.action_home);
+        // default
     }
 }

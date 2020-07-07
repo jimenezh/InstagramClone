@@ -39,8 +39,6 @@ public class ParseApplication extends Application {
                 .clientKey(null)  // set explicitly unless clientKey is explicitly configured on Parse server
                 .clientBuilder(builder)
                 .server("https://instagram-clone-fbu.herokuapp.com/parse/").build());
-
-
     }
 
 }
