@@ -29,11 +29,11 @@ import java.util.List;
 
 public class PostFragment extends Fragment {
 
-    PostsAdapter adapter;
-    FragmentPostBinding binding;
-    List<Post> posts;
-    public static final String TAG = "PostFragment";
-    private final int  POST_LIMIT = 20;
+    protected PostsAdapter adapter;
+    protected FragmentPostBinding binding;
+    protected List<Post> posts;
+    private static final String TAG = "PostFragment";
+    protected final int  POST_LIMIT = 20;
 
 
     public PostFragment() {
@@ -61,11 +61,11 @@ public class PostFragment extends Fragment {
         queryPosts();
     }
 
-    private void queryPosts() {
+    protected void queryPosts() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
         query.setLimit(POST_LIMIT); // Get only 20 posts
-        query.addDescendingOrder(Post.KEY_CREATED_AT); //
+        query.addDescendingOrder(Post.KEY_CREATED_AT); // // Orders from most recent to least recent
         query.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> results, ParseException e) {
