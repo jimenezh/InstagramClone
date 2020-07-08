@@ -38,13 +38,13 @@ public class DetailFragment extends Fragment {
         binding = FragmentDetailBinding.inflate(getLayoutInflater());
         // Get arguments
         Post post = Parcels.unwrap(getArguments().getParcelable(Post.class.getSimpleName()));
-        binding.tvAuthor.setText( post.getUser().getUsername());
-        binding.tvDescription.setText( post.getDescription());
+        binding.tvAuthor.setText(post.getUser().getUsername());
+        binding.tvDescription.setText(post.getDescription());
         binding.tvCreatedAt.setText(post.getCreatedAt().toString());
-        if(post.getImage() != null)
+        if (post.getImage() != null)
             Glide.with(getContext()).load(post.getImage().getUrl()).into(binding.ivPostImage);
 
-        Log.i(TAG, author+description+time+url);
+        Log.i(TAG, author + description + time + url);
         return binding.getRoot();
     }
 }
