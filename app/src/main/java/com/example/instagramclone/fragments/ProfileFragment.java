@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.instagramclone.LoginActivity;
 import com.example.instagramclone.R;
 import com.example.instagramclone.databinding.FragmentComposeBinding;
@@ -22,6 +23,7 @@ import com.example.instagramclone.models.Post;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -33,6 +35,8 @@ public class ProfileFragment extends Fragment {
     private final String TAG = "PostFragment";
     FragmentProfileBinding binding;
     FragmentManager fragmentManager;
+    public static final String KEY_IMAGE = "profilePicture";
+
 
     public ProfileFragment() {
     }
@@ -59,6 +63,14 @@ public class ProfileFragment extends Fragment {
                 getActivity().finish();
             }
         });
+
+        String imageUrl = "";
+        if(ParseUser.getCurrentUser().get(KEY_IMAGE) != null){
+            ParseFile file = (ParseFile) ParseUser.getCurrentUser().get(KEY_IMAGE);
+            imageUrl = file.getUrl();
+        }
+
+        Glide.with(getContext()).load(imageUrl).placeholder(R.drawable.ic_baseline_person_24).into(binding.ivProfilePic);
         return binding.getRoot();
     }
 }
