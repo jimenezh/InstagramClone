@@ -13,10 +13,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcel;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,6 +26,7 @@ import com.example.instagramclone.adapters.PostsAdapter;
 import com.example.instagramclone.databinding.ActivityLoginBinding;
 import com.example.instagramclone.databinding.ActivityMainBinding;
 import com.example.instagramclone.fragments.ComposeFragment;
+import com.example.instagramclone.fragments.DetailFragment;
 import com.example.instagramclone.fragments.PostFragment;
 import com.example.instagramclone.fragments.ProfileFragment;
 import com.example.instagramclone.models.Post;
@@ -35,10 +38,13 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.parceler.Parcels;
+
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PostsAdapter.PostAdapterListener {
 
     ActivityMainBinding binding;
     public static final String TAG = "MainActivity";
@@ -76,11 +82,26 @@ public class MainActivity extends AppCompatActivity {
                     default:
                         break;
                 }
-                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                fragmentManager.beginTransaction().replace(binding.flContainer.getId(), fragment).commit();
                 return true;
             }
         });
         binding.bottomNavigation.setSelectedItemId(R.id.action_home);
         // default
+    }
+
+    @Override
+    public void setPostListener(Post post) {
+        Log.i(TAG,post.getDescription());
+        // New fragment
+        DetailFragment detailFragment = new DetailFragment();
+
+        // Pass post into new fragment
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Post.class.getSimpleName(),Parcels.wrap(post));
+
+        detailFragment.setArguments(bundle);
+        // Replace frame layout with PostDetails
+        fragmentManager.beginTransaction().replace(binding.flContainer.getId(),detailFragment).commit();
     }
 }

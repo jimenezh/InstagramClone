@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PostFragment extends Fragment {
+public class PostFragment extends Fragment  {
 
     protected PostsAdapter adapter;
     protected FragmentPostBinding binding;
