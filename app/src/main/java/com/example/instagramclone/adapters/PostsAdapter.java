@@ -66,6 +66,20 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         return posts.size();
     }
 
+    // Clean all elements of the recycler
+    public void clear() {
+        posts.clear();
+        notifyDataSetChanged();
+        Log.i(TAG, "Cleared old posts");
+    }
+
+    // Add a list of items
+    public void addAll(List<Post> list) {
+        posts.addAll(list);
+        notifyDataSetChanged();
+        Log.i(TAG, "Added "+list.size()+" posts");
+    }
+
     // Custom ViewHolder class
     class ViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
 

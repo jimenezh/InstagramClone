@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,7 +34,7 @@ public class PostFragment extends Fragment  {
     protected FragmentPostBinding binding;
     protected List<Post> posts;
     private static final String TAG = "PostFragment";
-    protected final int  POST_LIMIT = 20;
+    protected final int POST_LIMIT = 20;
 
     protected ParseUser filterByUser;
 
@@ -59,6 +60,20 @@ public class PostFragment extends Fragment  {
         binding.rvPosts.setAdapter(adapter);
         // Setting layout manager
         binding.rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+        // Setup refresh listener which triggers new data loading
+        binding.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // once the network request has completed successfully.
+                queryPosts();
+            }
+        });
+        // Configure the refreshing colors
+        binding.swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        // Inital query
         queryPosts();
     }
 
@@ -66,25 +81,28 @@ public class PostFragment extends Fragment  {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
         query.setLimit(POST_LIMIT); // Get only 20 posts
-        if(filterByUser != null) {
+        if (filterByUser != null) {
             query.whereEqualTo(Post.KEY_USER, filterByUser);
         }
         query.addDescendingOrder(Post.KEY_CREATED_AT); // // Orders from most recent to least recent
         query.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> results, ParseException e) {
-                if(e != null){
+                if (e != null) {
                     Log.e(TAG, "Error in query", e);
                     return;
                 }
-                for(Post p : results){
-                    Log.i(TAG,p.getDescription());
+                for (Post p : results) {
+                    Log.i(TAG, p.getDescription());
                 }
-                posts.addAll(results); // adding posts to class field
-                Log.i(TAG, String.valueOf(posts.size()));
-                adapter.notifyDataSetChanged();
+                // Clears out old items in adapter + notifies
+                adapter.clear();
+                // Adds results + notifies
+                adapter.addAll(results);
             }
         });
+        // Gets rid off swipe container
+        binding.swipeContainer.setRefreshing(false);
     }
 
     @Override
