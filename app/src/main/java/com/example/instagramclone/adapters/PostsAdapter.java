@@ -37,7 +37,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
     // Interface to access listener on
     public interface PostAdapterListener{
-        void setPostListener(String str);
+        void setPostListener(Post str);
     }
 
     // Constructor
@@ -94,7 +94,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(context, "Clicked on Post", Toast.LENGTH_SHORT).show();
-                    ((MainActivity) context).setPostListener(null);
+                    Post post = posts.get(getAdapterPosition());
+                    ((MainActivity) context).setPostListener(post);
                 }
             });
         }

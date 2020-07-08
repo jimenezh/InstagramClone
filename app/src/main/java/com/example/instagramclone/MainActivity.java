@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import com.example.instagramclone.adapters.PostsAdapter;
 import com.example.instagramclone.databinding.ActivityLoginBinding;
 import com.example.instagramclone.databinding.ActivityMainBinding;
 import com.example.instagramclone.fragments.ComposeFragment;
+import com.example.instagramclone.fragments.DetailFragment;
 import com.example.instagramclone.fragments.PostFragment;
 import com.example.instagramclone.fragments.ProfileFragment;
 import com.example.instagramclone.models.Post;
@@ -36,6 +38,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements PostsAdapter.PostAdapterListener {
@@ -76,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements PostsAdapter.Post
                     default:
                         break;
                 }
-                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                fragmentManager.beginTransaction().replace(binding.flContainer.getId(), fragment).commit();
                 return true;
             }
         });
@@ -85,7 +88,20 @@ public class MainActivity extends AppCompatActivity implements PostsAdapter.Post
     }
 
     @Override
-    public void setPostListener(String post) {
-        Log.i(TAG,"From mainactivity");
+    public void setPostListener(Post post) {
+        Log.i(TAG,post.getDescription());
+        // New fragment
+        DetailFragment detailFragment = new DetailFragment();
+
+        // Pass post into new fragment
+        Bundle bundle = new Bundle();
+        bundle.putString("author", post.getUser().getUsername());
+        bundle.putString("url", post.getImage().getUrl());
+        bundle.putString("time", post.getCreatedAt().toString());
+        bundle.putString("description",post.getDescription());
+
+        detailFragment.setArguments(bundle);
+        // Replace frame layout with PostDetails
+        fragmentManager.beginTransaction().replace(binding.flContainer.getId(),detailFragment).commit();
     }
 }
