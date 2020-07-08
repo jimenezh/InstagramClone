@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcel;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
@@ -36,6 +37,8 @@ import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import org.parceler.Parcels;
 
 import java.io.File;
 import java.util.HashMap;
@@ -95,10 +98,7 @@ public class MainActivity extends AppCompatActivity implements PostsAdapter.Post
 
         // Pass post into new fragment
         Bundle bundle = new Bundle();
-        bundle.putString("author", post.getUser().getUsername());
-        bundle.putString("url", post.getImage().getUrl());
-        bundle.putString("time", post.getCreatedAt().toString());
-        bundle.putString("description",post.getDescription());
+        bundle.putParcelable(Post.class.getSimpleName(),Parcels.wrap(post));
 
         detailFragment.setArguments(bundle);
         // Replace frame layout with PostDetails

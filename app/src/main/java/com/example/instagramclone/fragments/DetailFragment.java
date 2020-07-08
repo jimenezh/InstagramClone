@@ -37,11 +37,12 @@ public class DetailFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentDetailBinding.inflate(getLayoutInflater());
         // Get arguments
-        Bundle args = getArguments();
-        binding.tvAuthor.setText( args.getString("author"));
-        binding.tvDescription.setText( args.getString("description"));
-        binding.tvCreatedAt.setText(args.getString("time"));
-        Glide.with(getContext()).load(args.getString("url")).into(binding.ivPostImage);
+        Post post = Parcels.unwrap(getArguments().getParcelable(Post.class.getSimpleName()));
+        binding.tvAuthor.setText( post.getUser().getUsername());
+        binding.tvDescription.setText( post.getDescription());
+        binding.tvCreatedAt.setText(post.getCreatedAt().toString());
+        if(post.getImage() != null)
+            Glide.with(getContext()).load(post.getImage().getUrl()).into(binding.ivPostImage);
 
         Log.i(TAG, author+description+time+url);
         return binding.getRoot();
