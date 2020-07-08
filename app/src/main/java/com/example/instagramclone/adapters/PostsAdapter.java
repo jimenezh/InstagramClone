@@ -1,6 +1,7 @@
 package com.example.instagramclone.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +10,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.instagramclone.MainActivity;
 import com.example.instagramclone.R;
 import com.example.instagramclone.databinding.ItemPostBinding;
+import com.example.instagramclone.fragments.DetailFragment;
 import com.example.instagramclone.models.Post;
 import com.parse.Parse;
 import com.parse.ParseFile;
@@ -28,6 +33,12 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
     Context context;
     List<Post> posts;
+    public static final String TAG ="PostsAdapter";
+
+    // Interface to access listener on
+    public interface PostAdapterListener{
+        void setPostListener(String str);
+    }
 
     // Constructor
     public PostsAdapter(Context context, List<Post> posts) {
@@ -56,7 +67,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     }
 
     // Custom ViewHolder class
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
 
         ItemPostBinding binding;
 
@@ -64,7 +75,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         public ViewHolder(@NonNull ItemPostBinding itemPostBinding) {
             super(itemPostBinding.getRoot()); // getRoot() returns a View
             this.binding = itemPostBinding; // Initializing binding
-            itemPostBinding.getRoot().setOnClickListener(this); // Sets on click listener on view
+            itemPostBinding.getRoot().setOnClickListener(this);
         }
 
 
@@ -83,6 +94,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(context, "Clicked on Post", Toast.LENGTH_SHORT).show();
+                    ((MainActivity) context).setPostListener(null);
                 }
             });
         }

@@ -38,7 +38,7 @@ import com.parse.SaveCallback;
 import java.io.File;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PostsAdapter.PostAdapterListener {
 
     ActivityMainBinding binding;
     public static final String TAG = "MainActivity";
@@ -82,5 +82,10 @@ public class MainActivity extends AppCompatActivity {
         });
         binding.bottomNavigation.setSelectedItemId(R.id.action_home);
         // default
+    }
+
+    @Override
+    public void setPostListener(String post) {
+        Log.i(TAG,"From mainactivity");
     }
 }
