@@ -28,6 +28,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.List;
 
@@ -144,6 +145,8 @@ public class ComposeFragment extends Fragment {
                 // by this point we have the camera photo on disk
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                 // RESIZE BITMAP, see section below
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                takenImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 // Load the taken image into a preview
                 binding.ivPostImage.setImageBitmap(takenImage);
             } else { // Result was a failure
