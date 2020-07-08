@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,7 +56,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     }
 
     // Custom ViewHolder class
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ItemPostBinding binding;
 
@@ -63,15 +64,27 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         public ViewHolder(@NonNull ItemPostBinding itemPostBinding) {
             super(itemPostBinding.getRoot()); // getRoot() returns a View
             this.binding = itemPostBinding; // Initializing binding
+            itemPostBinding.getRoot().setOnClickListener(this); // Sets on click listener on view
         }
 
 
         public void bind(Post post) {
             binding.tvAuthor.setText(post.getUser().getUsername());
             binding.tvDescription.setText(post.getDescription());
-            ParseFile image  = post.getImage();
-            if(image != null) // in case of dummy posts
+            ParseFile image = post.getImage();
+            if (image != null) // in case of dummy posts
                 Glide.with(context).load(post.getImage().getUrl()).centerCrop().into(binding.ivPostImage);
+        }
+
+        // Interface method. Takes in view.
+        @Override
+        public void onClick(View view) {
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(context, "Clicked on Post", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }
