@@ -17,6 +17,7 @@ public class LoginActivity extends AppCompatActivity {
 
     ActivityLoginBinding binding;
     public static final String TAG = "LoginActivity";
+    public static final int REQUEST_OK  =20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,14 @@ public class LoginActivity extends AppCompatActivity {
                 String username = binding.etUsername.getText().toString();
                 String password = binding.etPassword.getText().toString();
                 logInUser(username, password);
+            }
+        });
+
+        binding.btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+                startActivity(intent);
             }
         });
 
