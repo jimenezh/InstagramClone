@@ -1,6 +1,7 @@
 package com.example.instagramclone.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
     Context context;
     List<Post> posts;
+    public static final String TAG = "PostsAdapter";
 
     // Constructor
     public PostsAdapter(Context context, List<Post> posts) {
@@ -52,6 +54,20 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return posts.size();
+    }
+
+    // Clean all elements of the recycler
+    public void clear() {
+        posts.clear();
+        notifyDataSetChanged();
+        Log.i(TAG, "Cleared old posts");
+    }
+
+    // Add a list of items
+    public void addAll(List<Post> list) {
+        posts.addAll(list);
+        notifyDataSetChanged();
+        Log.i(TAG, "Added "+list.size()+" posts");
     }
 
     // Custom ViewHolder class
