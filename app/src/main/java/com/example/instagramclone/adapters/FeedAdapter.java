@@ -1,6 +1,8 @@
 package com.example.instagramclone.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.instagramclone.MainActivity;
 import com.example.instagramclone.R;
 import com.example.instagramclone.databinding.ItemPostBinding;
@@ -95,8 +98,21 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             // Setting images
             ParseFile image = post.getImage();
             ParseFile profilePic = (ParseFile) post.getUser().get(ProfileFragment.KEY_IMAGE);
-            setImage(image,binding.ivPostImage);
-            setImage(profilePic, binding.ivProfilePic);
+
+            String imageUrl = "";
+            if (image != null) // in case of dummy posts
+                imageUrl = image.getUrl();
+            Glide.with(context).load(imageUrl).centerCrop()
+                    .placeholder(R.drawable.ic_baseline_person_24)
+                    .into(binding.ivPostImage);
+
+            String profileUrl="";
+            if(profilePic != null)
+                profileUrl = profilePic.getUrl();
+            Glide.with(context).load(imageUrl).centerCrop()
+                    .placeholder(R.drawable.ic_baseline_person_24)
+                    .transform(new CircleCrop())
+                    .into(binding.ivProfilePic);
             // Timestamp
             binding.tvCreatedAt.setText(post.getCreatedAt().toString());
 
@@ -118,12 +134,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             binding.tvAuthor.setOnClickListener(toProfile);
         }
 
-        private void setImage(ParseFile image, ImageView target) {
-            String imageUrl = "";
-            if (image != null) // in case of dummy posts
-                imageUrl = image.getUrl();
-            Glide.with(context).load(imageUrl).centerCrop().placeholder(R.drawable.ic_baseline_person_24).into(target);
-        }
 
         // Interface method. Takes in view.
         @Override
