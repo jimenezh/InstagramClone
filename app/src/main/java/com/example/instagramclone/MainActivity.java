@@ -3,6 +3,7 @@ package com.example.instagramclone;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -43,9 +44,8 @@ public class MainActivity extends AppCompatActivity implements FeedAdapter.PostA
         setContentView(binding.getRoot());
         setBottomNavigationListener();
 
-//        // Custom ActionBar
-//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//        getSupportActionBar().setCustomView(R.layout.menu_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     private void setBottomNavigationListener() {
