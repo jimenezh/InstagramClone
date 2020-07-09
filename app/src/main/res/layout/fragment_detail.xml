@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_centerInParent="true"
-    tools:context=".fragments.FeedFragment">
+    android:layout_centerHorizontal="true"
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/ivProfilePic"
@@ -31,7 +32,7 @@
 
     <ImageView
         android:id="@+id/ivPostImage"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_marginTop="8dp"
         android:layout_weight="1"
@@ -63,6 +64,5 @@
         app:layout_constraintStart_toStartOf="@+id/ivPostImage"
         app:layout_constraintTop_toBottomOf="@+id/tvCreatedAt"
         tools:text="This is a very long description This is a very long descriptionThis is a very long descriptionThis is a very long descriptionThis is a very long descriptionThis is a very long description" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

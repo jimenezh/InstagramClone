@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.instagramclone.LoginActivity;
 import com.example.instagramclone.MainActivity;
 import com.example.instagramclone.R;
@@ -64,7 +66,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ParseUser.logOut();
-                Toast.makeText(getContext(),"User logged out",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "User logged out", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().startActivity(intent);
@@ -74,12 +76,16 @@ public class ProfileFragment extends Fragment {
 
         // Setting up profile pic
         String imageUrl = "";
-        if(user.get(KEY_IMAGE) != null){
+        if (user.get(KEY_IMAGE) != null) {
             ParseFile file = (ParseFile) ParseUser.getCurrentUser().get(KEY_IMAGE);
-            if(file != null)
+            if (file != null)
                 imageUrl = file.getUrl();
         }
-        Glide.with(getContext()).load(imageUrl).placeholder(R.drawable.ic_baseline_person_24).into(binding.ivProfilePic);
+        Glide.with(getContext())
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_baseline_person_24)
+                .transform(new CircleCrop())
+                .into(binding.ivProfilePic);
 
         // Username
         binding.tvUsername.setText(user.getUsername());
@@ -121,7 +127,7 @@ public class ProfileFragment extends Fragment {
         File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
 
         // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
             Log.d(TAG, "failed to create directory");
         }
 
@@ -146,14 +152,14 @@ public class ProfileFragment extends Fragment {
                 takenImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] image = stream.toByteArray();
                 ParseFile file = new ParseFile(image);
-                user.put(KEY_IMAGE,file);
+                user.put(KEY_IMAGE, file);
 
 
                 ((MainActivity) getContext()).showProgressBar();
                 user.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-                        if(e != null)
+                        if (e != null)
                             Toast.makeText(getContext(), "Could not update user information", Toast.LENGTH_SHORT);
                         ((MainActivity) getContext()).hideProgressBar();
                     }
