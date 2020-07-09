@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.instagramclone.R;
 import com.example.instagramclone.databinding.FragmentUserBinding;
 import com.parse.ParseFile;
@@ -48,7 +49,11 @@ public class UserFragment extends Fragment {
             if(file != null)
                 imageUrl = file.getUrl();
         }
-        Glide.with(getContext()).load(imageUrl).placeholder(R.drawable.ic_baseline_person_24).into(binding.ivProfilePic);
+        Glide.with(getContext())
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_baseline_person_24)
+                .transform(new CircleCrop())
+                .into(binding.ivProfilePic);
 
         // Username
         binding.tvUsername.setText(user.getUsername());

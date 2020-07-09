@@ -132,6 +132,8 @@ public class ComposeFragment extends Fragment {
             public void done(ParseException e) {
                 if (e != null) {
                     Log.e(TAG, "Error saving post", e);
+                    Toast.makeText(getContext(), "Could not post :(", Toast.LENGTH_SHORT).show();
+                    ((MainActivity) getContext()).hideProgressBar();
                     return;
                 }
                 Log.i(TAG, "Posted!");
