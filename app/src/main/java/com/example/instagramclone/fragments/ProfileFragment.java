@@ -53,9 +53,9 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(getLayoutInflater(), container, false);
         // Setting up fragments for user pictures
         fragmentManager = getChildFragmentManager();
-        FeedFragment feedFragment = new FeedFragment();
-        feedFragment.filterByUser = ParseUser.getCurrentUser();
-        fragmentManager.beginTransaction().replace(R.id.flPics, feedFragment).commit();
+        GridFeedFragment gridFeedFragment = new GridFeedFragment();
+        gridFeedFragment.filterByUser = ParseUser.getCurrentUser();
+        fragmentManager.beginTransaction().replace(R.id.flPics, gridFeedFragment).commit();
         // Sign out
         binding.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
