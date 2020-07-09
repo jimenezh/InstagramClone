@@ -20,10 +20,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.instagramclone.LoginActivity;
+import com.example.instagramclone.MainActivity;
 import com.example.instagramclone.R;
 import com.example.instagramclone.databinding.FragmentProfileBinding;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -144,7 +147,17 @@ public class ProfileFragment extends Fragment {
                 byte[] image = stream.toByteArray();
                 ParseFile file = new ParseFile(image);
                 user.put(KEY_IMAGE,file);
-                user.saveInBackground();
+
+
+                ((MainActivity) getContext()).showProgressBar();
+                user.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if(e != null)
+                            Toast.makeText(getContext(), "Could not update user information", Toast.LENGTH_SHORT);
+                        ((MainActivity) getContext()).hideProgressBar();
+                    }
+                });
             } else { // Result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }

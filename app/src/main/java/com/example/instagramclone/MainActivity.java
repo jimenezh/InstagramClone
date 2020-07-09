@@ -1,12 +1,15 @@
 package com.example.instagramclone;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.instagramclone.adapters.FeedAdapter;
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements FeedAdapter.PostA
     final ComposeFragment composeFragment = new ComposeFragment();
     final ProfileFragment profileFragment = new ProfileFragment();
 
+    MenuItem miActionProgressItem;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +42,10 @@ public class MainActivity extends AppCompatActivity implements FeedAdapter.PostA
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setBottomNavigationListener();
+
+//        // Custom ActionBar
+//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+//        getSupportActionBar().setCustomView(R.layout.menu_main);
     }
 
     private void setBottomNavigationListener() {
@@ -87,5 +96,25 @@ public class MainActivity extends AppCompatActivity implements FeedAdapter.PostA
         fragment.setArguments(bundle);
         // Replace frame layout with PostDetails
         fragmentManager.beginTransaction().replace(binding.flContainer.getId(),fragment).commit();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+        // Return to finish
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        miActionProgressItem.setVisible(false);
     }
 }
