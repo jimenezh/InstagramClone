@@ -12,9 +12,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.instagramclone.adapters.FeedAdapter;
 import com.example.instagramclone.databinding.ActivityMainBinding;
+import com.example.instagramclone.databinding.ToolbarBinding;
 import com.example.instagramclone.fragments.ComposeFragment;
 import com.example.instagramclone.fragments.FeedFragment;
 import com.example.instagramclone.fragments.ProfileFragment;
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements FeedAdapter.PostA
     final ComposeFragment composeFragment = new ComposeFragment();
     final ProfileFragment profileFragment = new ProfileFragment();
 
-    MenuItem miActionProgressItem;
+    ProgressBar miActionProgressItem;
 
 
     @Override
@@ -101,20 +104,23 @@ public class MainActivity extends AppCompatActivity implements FeedAdapter.PostA
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        // Store instance of the menu item containing progress
-        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.toolbar);
+
+        miActionProgressItem = findViewById(R.id.pbProgressAction);
+        hideProgressBar();
         // Return to finish
         return super.onPrepareOptionsMenu(menu);
     }
 
     public void showProgressBar() {
         // Show progress item
-        miActionProgressItem.setVisible(true);
+        miActionProgressItem.setVisibility(View.VISIBLE);
     }
 
     public void hideProgressBar() {
         // Hide progress item
-        miActionProgressItem.setVisible(false);
+        miActionProgressItem.setVisibility(View.INVISIBLE);
     }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Instagram</string>
+    <string name="app_name"></string>
     <string name="sign_up">Sign Up</string>
     <string name="or">"- OR - "</string>
     <string name="password">Password</string>
