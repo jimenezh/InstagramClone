@@ -11,9 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.instagramclone.R;
 import com.example.instagramclone.databinding.FragmentDetailBinding;
 import com.example.instagramclone.models.Post;
+import com.parse.ParseFile;
 
 import org.parceler.Parcels;
 
@@ -43,6 +46,15 @@ public class DetailFragment extends Fragment {
         binding.tvCreatedAt.setText(post.getCreatedAt().toString());
         if (post.getImage() != null)
             Glide.with(getContext()).load(post.getImage().getUrl()).into(binding.ivPostImage);
+
+        String url = "";
+        if (post.getUser().get(ProfileFragment.KEY_IMAGE) != null)
+            url = ((ParseFile) post.getUser().get(ProfileFragment.KEY_IMAGE)).getUrl();
+        Glide.with(getContext())
+                .load(url)
+                .placeholder(R.drawable.ic_baseline_person_24)
+                .transform(new CircleCrop())
+                .into(binding.ivProfilePic);
 
         Log.i(TAG, author + description + time + url);
         return binding.getRoot();
