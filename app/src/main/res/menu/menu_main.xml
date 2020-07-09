@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item
         android:id="@+id/miActionProgress"
+        android:orderInCategory="100"
         android:title="Loading..."
         android:visible="false"
-        android:orderInCategory="100"
+        app:actionLayout="@layout/action_view_progress"
         app:showAsAction="always"
-        app:actionLayout="@layout/action_view_progress" />
+        tools:visible="true" />
 
 </menu>
