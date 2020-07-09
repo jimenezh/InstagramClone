@@ -39,7 +39,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
     // Interface to access listener on
     public interface PostAdapterListener{
-        void setPostListener(Post str);
+        void setPostListener(Object object, Fragment fragment, String type);
     }
 
     // Constructor
@@ -106,6 +106,16 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             // Timestamp
             binding.tvCreatedAt.setText(post.getCreatedAt().toString());
 
+            // Listeners for username + profile pic
+            View.OnClickListener toProfile = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(context, "To profile", Toast.LENGTH_SHORT).show();
+                }
+            };
+            binding.ivProfilePic.setOnClickListener(toProfile);
+            binding.tvAuthor.setOnClickListener(toProfile);
+
         }
 
         private void setImage(ParseFile image, ImageView target) {
@@ -123,7 +133,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 public void onClick(View view) {
                     Toast.makeText(context, "Clicked on Post", Toast.LENGTH_SHORT).show();
                     Post post = posts.get(getAdapterPosition());
-                    ((MainActivity) context).setPostListener(post);
+                    ((MainActivity) context).setPostListener(post, new DetailFragment(), "Post");
                 }
             });
         }

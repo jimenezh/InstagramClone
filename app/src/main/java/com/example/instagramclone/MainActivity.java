@@ -91,17 +91,25 @@ public class MainActivity extends AppCompatActivity implements PostsAdapter.Post
     }
 
     @Override
-    public void setPostListener(Post post) {
-        Log.i(TAG,post.getDescription());
+    public void setPostListener(Object object, Fragment fragment, String type) {
+        Log.i(TAG, String.valueOf(object.getClass()));
         // New fragment
-        DetailFragment detailFragment = new DetailFragment();
+//        DetailFragment detailFragment = new DetailFragment();
 
         // Pass post into new fragment
         Bundle bundle = new Bundle();
-        bundle.putParcelable(Post.class.getSimpleName(),Parcels.wrap(post));
 
-        detailFragment.setArguments(bundle);
+        switch (type){
+            case "Post":
+                bundle.putParcelable(Post.class.getSimpleName(),Parcels.wrap( (Post)  object));
+                break;
+            case "User":
+                bundle.putParcelable(ParseUser.class.getSimpleName(),Parcels.wrap( (ParseUser)  object));
+                break;
+        }
+
+        fragment.setArguments(bundle);
         // Replace frame layout with PostDetails
-        fragmentManager.beginTransaction().replace(binding.flContainer.getId(),detailFragment).commit();
+        fragmentManager.beginTransaction().replace(binding.flContainer.getId(),fragment).commit();
     }
 }
