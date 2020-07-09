@@ -3,6 +3,7 @@ package com.example.instagramclone.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +17,12 @@ import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
-import static com.example.instagramclone.fragments.ProfileFragment.KEY_IMAGE;
-
 
 public class UserFragment extends Fragment {
 
     FragmentUserBinding binding;
     ParseUser user;
+    FragmentManager fragmentManager;
 
     public UserFragment() {
         // Required empty public constructor
@@ -52,6 +52,13 @@ public class UserFragment extends Fragment {
 
         // Username
         binding.tvUsername.setText(user.getUsername());
+
+        // Setting up fragments for user pictures
+        fragmentManager = getChildFragmentManager();
+        fragmentManager = getChildFragmentManager();
+        GridFeedFragment gridFeedFragment = new GridFeedFragment();
+        gridFeedFragment.filterByUser = user;
+        fragmentManager.beginTransaction().replace(R.id.flPics, gridFeedFragment).commit();
 
 
         return binding.getRoot();

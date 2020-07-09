@@ -1,5 +1,7 @@
+
 package com.example.instagramclone.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,8 +16,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.instagramclone.R;
 import com.example.instagramclone.adapters.FeedAdapter;
+import com.example.instagramclone.adapters.PostsGridAdapter;
 import com.example.instagramclone.databinding.FragmentFeedBinding;
+import com.example.instagramclone.databinding.FragmentGridFeedBinding;
 import com.example.instagramclone.models.Post;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -25,26 +30,31 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+public class GridFeedFragment extends Fragment{
 
-public class FeedFragment extends Fragment {
-
-    protected FeedAdapter adapter;
-    protected FragmentFeedBinding binding;
     protected List<Post> posts;
-    private static final String TAG = "PostFragment";
+    protected PostsGridAdapter adapter;
+    protected FragmentGridFeedBinding binding;
+    private static final String TAG = "GridFeedFragment";
     protected final int POST_LIMIT = 20;
 
-    protected ParseUser filterByUser;
 
-    public FeedFragment() {
+
+
+    ParseUser filterByUser;
+    private static final int SPAN_COUNT = 3;
+
+    public GridFeedFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater,container,savedInstanceState);
         // Inflate the layout for this fragment
-        binding = FragmentFeedBinding.inflate(getLayoutInflater());
+        binding = FragmentGridFeedBinding.inflate(getLayoutInflater());
         return binding.getRoot();
     }
 
@@ -54,10 +64,10 @@ public class FeedFragment extends Fragment {
         // Initializing empty posts list
         posts = new ArrayList<>();
         // Setting adapter
-        adapter = new FeedAdapter(getContext(), posts);
+        adapter = new PostsGridAdapter(getContext(), posts);
         binding.rvPosts.setAdapter(adapter);
         // Setting layout manager
-        binding.rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rvPosts.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT));
         // Setup refresh listener which triggers new data loading
         binding.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -75,14 +85,11 @@ public class FeedFragment extends Fragment {
         queryPosts();
     }
 
-
     protected void queryPosts() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
         query.setLimit(POST_LIMIT); // Get only 20 posts
-        if (filterByUser != null) {
-            query.whereEqualTo(Post.KEY_USER, filterByUser);
-        }
+        query.whereEqualTo(Post.KEY_USER, filterByUser);
         query.addDescendingOrder(Post.KEY_CREATED_AT); // // Orders from most recent to least recent
         query.findInBackground(new FindCallback<Post>() {
             @Override
@@ -109,4 +116,6 @@ public class FeedFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
+
 }
