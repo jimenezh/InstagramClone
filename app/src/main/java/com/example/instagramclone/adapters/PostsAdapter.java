@@ -20,9 +20,11 @@ import com.example.instagramclone.R;
 import com.example.instagramclone.databinding.ItemPostBinding;
 import com.example.instagramclone.fragments.DetailFragment;
 import com.example.instagramclone.fragments.ProfileFragment;
+import com.example.instagramclone.fragments.UserFragment;
 import com.example.instagramclone.models.Post;
 import com.parse.Parse;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import org.w3c.dom.Text;
 
@@ -107,15 +109,21 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             binding.tvCreatedAt.setText(post.getCreatedAt().toString());
 
             // Listeners for username + profile pic
+            setListenerToUserProfile();
+
+        }
+
+        private void setListenerToUserProfile() {
             View.OnClickListener toProfile = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(context, "To profile", Toast.LENGTH_SHORT).show();
+                    ParseUser user = posts.get(getAdapterPosition()).getUser();
+                    ((MainActivity) context).setPostListener(user, new UserFragment(), "User");
                 }
             };
             binding.ivProfilePic.setOnClickListener(toProfile);
             binding.tvAuthor.setOnClickListener(toProfile);
-
         }
 
         private void setImage(ParseFile image, ImageView target) {

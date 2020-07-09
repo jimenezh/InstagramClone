@@ -82,7 +82,8 @@ public class ProfileFragment extends Fragment {
         String imageUrl = "";
         if(user.get(KEY_IMAGE) != null){
             ParseFile file = (ParseFile) ParseUser.getCurrentUser().get(KEY_IMAGE);
-            imageUrl = file.getUrl();
+            if(file != null)
+                imageUrl = file.getUrl();
         }
         Glide.with(getContext()).load(imageUrl).placeholder(R.drawable.ic_baseline_person_24).into(binding.ivProfilePic);
 
