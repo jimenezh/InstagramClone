@@ -6,12 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -22,18 +20,12 @@ import com.example.instagramclone.fragments.DetailFragment;
 import com.example.instagramclone.fragments.ProfileFragment;
 import com.example.instagramclone.fragments.UserFragment;
 import com.example.instagramclone.models.Post;
-import com.parse.Parse;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
-import org.w3c.dom.Text;
-
-import static com.example.instagramclone.R.layout.fragment_compose;
-import static com.example.instagramclone.R.layout.item_post;
-
 import java.util.List;
 
-public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
+public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     Context context;
     List<Post> posts;
@@ -45,7 +37,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     }
 
     // Constructor
-    public PostsAdapter(Context context, List<Post> posts) {
+    public FeedAdapter(Context context, List<Post> posts) {
         this.context = context;
         this.posts = posts;
     }

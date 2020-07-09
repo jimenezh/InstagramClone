@@ -5,18 +5,16 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.example.instagramclone.R;
-import com.example.instagramclone.adapters.PostsAdapter;
+import com.example.instagramclone.adapters.FeedAdapter;
 import com.example.instagramclone.databinding.FragmentPostBinding;
 import com.example.instagramclone.models.Post;
 import com.parse.FindCallback;
@@ -28,17 +26,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PostFragment extends Fragment  {
+public class FeedFragment extends Fragment  {
 
-    protected PostsAdapter adapter;
+    protected FeedAdapter adapter;
     protected FragmentPostBinding binding;
     protected List<Post> posts;
     private static final String TAG = "PostFragment";
     protected final int POST_LIMIT = 20;
 
     protected ParseUser filterByUser;
+    protected boolean useGridLayoutManager;
+    private  static final int SPAN_COUNT =3;
 
-    public PostFragment() {
+    public FeedFragment() {
         // Required empty public constructor
     }
 
@@ -56,10 +56,10 @@ public class PostFragment extends Fragment  {
         // Initializing empty posts list
         posts = new ArrayList<>();
         // Setting adapter
-        adapter = new PostsAdapter(getContext(), posts);
+        adapter = new FeedAdapter(getContext(), posts);
         binding.rvPosts.setAdapter(adapter);
         // Setting layout manager
-        binding.rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+        setLayoutManager();
         // Setup refresh listener which triggers new data loading
         binding.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -75,6 +75,14 @@ public class PostFragment extends Fragment  {
                 android.R.color.holo_red_light);
         // Inital query
         queryPosts();
+    }
+
+    private void setLayoutManager() {
+        if(useGridLayoutManager){
+            binding.rvPosts.setLayoutManager(new GridLayoutManager(getContext(),SPAN_COUNT));
+        }
+        else
+            binding.rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     protected void queryPosts() {
