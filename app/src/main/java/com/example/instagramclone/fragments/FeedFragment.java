@@ -5,19 +5,17 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.example.instagramclone.R;
-import com.example.instagramclone.adapters.PostsAdapter;
-import com.example.instagramclone.databinding.FragmentPostBinding;
+import com.example.instagramclone.adapters.FeedAdapter;
+import com.example.instagramclone.databinding.FragmentFeedBinding;
 import com.example.instagramclone.models.Post;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -28,17 +26,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PostFragment extends Fragment  {
+public class FeedFragment extends Fragment {
 
-    protected PostsAdapter adapter;
-    protected FragmentPostBinding binding;
+    protected FeedAdapter adapter;
+    protected FragmentFeedBinding binding;
     protected List<Post> posts;
     private static final String TAG = "PostFragment";
     protected final int POST_LIMIT = 20;
 
     protected ParseUser filterByUser;
 
-    public PostFragment() {
+    public FeedFragment() {
         // Required empty public constructor
     }
 
@@ -46,7 +44,7 @@ public class PostFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentPostBinding.inflate(getLayoutInflater());
+        binding = FragmentFeedBinding.inflate(getLayoutInflater());
         return binding.getRoot();
     }
 
@@ -56,7 +54,7 @@ public class PostFragment extends Fragment  {
         // Initializing empty posts list
         posts = new ArrayList<>();
         // Setting adapter
-        adapter = new PostsAdapter(getContext(), posts);
+        adapter = new FeedAdapter(getContext(), posts);
         binding.rvPosts.setAdapter(adapter);
         // Setting layout manager
         binding.rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -76,6 +74,7 @@ public class PostFragment extends Fragment  {
         // Inital query
         queryPosts();
     }
+
 
     protected void queryPosts() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);

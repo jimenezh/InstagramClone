@@ -6,8 +6,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -23,26 +21,19 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.instagramclone.LoginActivity;
 import com.example.instagramclone.R;
-import com.example.instagramclone.databinding.FragmentComposeBinding;
 import com.example.instagramclone.databinding.FragmentProfileBinding;
-import com.example.instagramclone.models.Post;
-import com.parse.FindCallback;
-import com.parse.Parse;
-import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
 
 public class ProfileFragment extends Fragment {
 
-    private final String TAG = "PostFragment";
+    private final String TAG = "ProfileFragment";
     FragmentProfileBinding binding;
     FragmentManager fragmentManager;
     public static final String KEY_IMAGE = "profilePicture";
@@ -62,9 +53,9 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(getLayoutInflater(), container, false);
         // Setting up fragments for user pictures
         fragmentManager = getChildFragmentManager();
-        PostFragment postFragment = new PostFragment();
-        postFragment.filterByUser = ParseUser.getCurrentUser();
-        fragmentManager.beginTransaction().replace(R.id.flPics, postFragment).commit();
+        GridFeedFragment gridFeedFragment = new GridFeedFragment();
+        gridFeedFragment.filterByUser = ParseUser.getCurrentUser();
+        fragmentManager.beginTransaction().replace(R.id.flPics, gridFeedFragment).commit();
         // Sign out
         binding.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +73,8 @@ public class ProfileFragment extends Fragment {
         String imageUrl = "";
         if(user.get(KEY_IMAGE) != null){
             ParseFile file = (ParseFile) ParseUser.getCurrentUser().get(KEY_IMAGE);
-            imageUrl = file.getUrl();
+            if(file != null)
+                imageUrl = file.getUrl();
         }
         Glide.with(getContext()).load(imageUrl).placeholder(R.drawable.ic_baseline_person_24).into(binding.ivProfilePic);
 
