@@ -75,17 +75,7 @@ public class ProfileFragment extends Fragment {
         });
 
         // Setting up profile pic
-        String imageUrl = "";
-        if (user.get(KEY_IMAGE) != null) {
-            ParseFile file = (ParseFile) ParseUser.getCurrentUser().get(KEY_IMAGE);
-            if (file != null)
-                imageUrl = file.getUrl();
-        }
-        Glide.with(getContext())
-                .load(imageUrl)
-                .placeholder(R.drawable.ic_baseline_person_24)
-                .transform(new CircleCrop())
-                .into(binding.ivProfilePic);
+        setProfilePicture();
 
         // Username
         binding.tvUsername.setText(user.getUsername());
@@ -98,6 +88,20 @@ public class ProfileFragment extends Fragment {
             }
         });
         return binding.getRoot();
+    }
+
+    private void setProfilePicture() {
+        String imageUrl = "";
+        if (user.get(KEY_IMAGE) != null) {
+            ParseFile file = (ParseFile) user.get(KEY_IMAGE);
+            if (file != null)
+                imageUrl = file.getUrl();
+        }
+        Glide.with(getContext())
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_baseline_person_24)
+                .transform(new CircleCrop())
+                .into(binding.ivProfilePic);
     }
 
     public void launchCamera() {
@@ -146,12 +150,8 @@ public class ProfileFragment extends Fragment {
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                 // RESIZE BITMAP, see section below
                 // Load the taken image into a preview
-                binding.ivProfilePic.setImageBitmap(takenImage);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                // Compress image to lower quality scale 1 - 100
-                takenImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] image = stream.toByteArray();
-                ParseFile file = new ParseFile(image);
+
+                ParseFile file = new ParseFile(compressImage(takenImage));
                 user.put(KEY_IMAGE, file);
 
 
@@ -162,11 +162,19 @@ public class ProfileFragment extends Fragment {
                         if (e != null)
                             Toast.makeText(getContext(), "Could not update user information", Toast.LENGTH_SHORT);
                         ((MainActivity) getContext()).hideProgressBar();
+                        setProfilePicture();
                     }
                 });
             } else { // Result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private byte[] compressImage(Bitmap takenImage) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        // Compress image to lower quality scale 1 - 100
+        takenImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
     }
 }
