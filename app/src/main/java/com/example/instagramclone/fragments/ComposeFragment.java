@@ -56,12 +56,14 @@ public class ComposeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 String description = binding.etDescription.getText().toString();
-                if(description.isEmpty())
-                    Toast.makeText(getContext(),"Description cannot be empty", Toast.LENGTH_SHORT).show();
-                else if(photoFile == null || binding.ivPostImage.getDrawable() == null)
+                if (description.isEmpty())
+                    Toast.makeText(getContext(), "Description cannot be empty", Toast.LENGTH_SHORT).show();
+                else if (photoFile == null || binding.ivPostImage.getDrawable() == null)
                     Toast.makeText(getContext(), "No image!", Toast.LENGTH_SHORT).show();
-                else
+                else {
+                    ((MainActivity) getContext()).showProgressBar();
                     savePost(description, ParseUser.getCurrentUser(), photoFile);
+                }
             }
         });
 
@@ -108,7 +110,7 @@ public class ComposeFragment extends Fragment {
         File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
 
         // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
+        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
             Log.d(TAG, "failed to create directory");
         }
 
@@ -117,22 +119,25 @@ public class ComposeFragment extends Fragment {
 
         return file;
     }
+
     private void savePost(String description, ParseUser currentUser, File photoFile) {
         Post p = new Post();
         p.setDescription(description);
 //        p.setImage();
         p.setUser(currentUser);
         p.setImage(new ParseFile(photoFile));
+
         p.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if(e != null) {
+                if (e != null) {
                     Log.e(TAG, "Error saving post", e);
                     return;
                 }
                 Log.i(TAG, "Posted!");
-                Toast.makeText(getContext(), "Posted",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Posted", Toast.LENGTH_SHORT).show();
                 binding.etDescription.setText("");
+                ((MainActivity) getContext()).hideProgressBar();
             }
         });
     }
