@@ -23,7 +23,6 @@ import com.example.instagramclone.models.Post;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
@@ -92,7 +91,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         }
 
 
-        public void bind(Post post) {
+        public void bind(final Post post) {
             binding.tvAuthor.setText(post.getUser().getUsername());
             binding.tvDescription.setText(post.getDescription());
             // Setting images
@@ -105,13 +104,15 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
             // Like setup
             numLikes = post.getNumberOfLikes();
-            checkIfUserLikedPost(post, String.valueOf(numLikes));
+            setIfLiked(post, String.valueOf(numLikes));
+
+            final List<ParseUser> usersWhoLiked = post.getUsersWhoLiked();
 
             binding.ivLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     isLiked = !isLiked;
-                    updateLikes();
+                    updateLikes(post, usersWhoLiked);
                 }
             });
 
@@ -126,18 +127,17 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         }
 
 
-        private void checkIfUserLikedPost(Post post, String currentLikes) {
-            ParseUser[] usersWhoLiked = post.getUsersWhoLiked();
-            if (usersWhoLiked == null){
+        private void setIfLiked(Post post, String currentLikes) {
+            List<ParseUser> usersWhoLiked = post.getUsersWhoLiked();
+            if (usersWhoLiked == null) {
                 isLiked = false;
-            }
-
-            else
-                isLiked = (Arrays.binarySearch(usersWhoLiked, ParseUser.getCurrentUser()) >= 0);
+            } else
+                isLiked = post.didUserLikePost(ParseUser.getCurrentUser());
             binding.tvNumLikes.setText(currentLikes);
         }
 
-        private void updateLikes() {
+
+        private void updateLikes(Post post, List<ParseUser> usersWhoLiked) {
             if (isLiked) {
                 showFilledHeart();
                 numLikes++;
@@ -147,6 +147,17 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             }
 
             binding.tvNumLikes.setText(String.valueOf(numLikes));
+
+            ParseUser currUser = ParseUser.getCurrentUser();
+            boolean originallyLiked = post.didUserLikePost(currUser);
+
+            // user unliked
+            if (originallyLiked && !isLiked) {
+                post.removeUserFromLikes(currUser);
+            } else if (!originallyLiked && isLiked) { // user liked
+                post.setNumLikes(currUser);
+
+            }
         }
 
         private void setImages(Post post) {
