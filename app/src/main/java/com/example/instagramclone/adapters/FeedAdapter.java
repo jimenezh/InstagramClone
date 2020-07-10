@@ -1,13 +1,10 @@
 package com.example.instagramclone.adapters;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,10 +29,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     Context context;
     List<Post> posts;
-    public static final String TAG ="PostsAdapter";
+    public static final String TAG = "PostsAdapter";
+    private boolean isCurrentlyLiked;
 
     // Interface to access listener on
-    public interface PostAdapterListener{
+    public interface PostAdapterListener {
         void setPostListener(Object object, Fragment fragment, String type);
     }
 
@@ -76,13 +74,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     public void addAll(List<Post> list) {
         posts.addAll(list);
         notifyDataSetChanged();
-        Log.i(TAG, "Added "+list.size()+" posts");
+        Log.i(TAG, "Added " + list.size() + " posts");
     }
 
     // Custom ViewHolder class
-    class ViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ItemPostBinding binding;
+        int numLikes;
 
         // ViewBinding => pass in Binding instead of View into the ViewHolder
         public ViewHolder(@NonNull ItemPostBinding itemPostBinding) {
@@ -92,10 +91,81 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         }
 
 
-        public void bind(Post post) {
+        public void bind(final Post post) {
             binding.tvAuthor.setText(post.getUser().getUsername());
             binding.tvDescription.setText(post.getDescription());
             // Setting images
+            setImages(post);
+            // Timestamp
+            binding.tvCreatedAt.setText(post.getCreatedAt().toString());
+
+            // Listeners for username + profile pic
+            setListenerToUserProfile();
+
+            // Like setup
+            numLikes = post.getNumberOfLikes();
+            isCurrentlyLiked = wasOriginallyLiked(post);
+
+            setIfLiked(post, String.valueOf(numLikes));
+
+            binding.ivLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Let's say a post is liked
+                    isCurrentlyLiked = !isCurrentlyLiked;
+                    // Now we update from (originally unliked to liked
+                    updateLikes(post);
+                }
+            });
+
+        }
+
+        private void updateLikes(Post post) {
+            if(wasOriginallyLiked(post)){
+                if(isCurrentlyLiked){
+                    showFilledHeart();
+                } else{
+                    numLikes--;
+                    showUnfilledHeart();
+                    post.removeUserFromLikes(ParseUser.getCurrentUser());
+                }
+            } else{
+                if(isCurrentlyLiked){
+                    numLikes++;
+                    showFilledHeart();
+                    post.addUserToLikes(ParseUser.getCurrentUser());
+                } else{
+                    showUnfilledHeart();
+                }
+            }
+
+            binding.tvNumLikes.setText(String.valueOf(numLikes));
+        }
+
+        private boolean wasOriginallyLiked(Post post) {
+            return post.didUserLikePost(ParseUser.getCurrentUser().getObjectId());
+        }
+
+        private void showFilledHeart() {
+            binding.ivLike.setImageResource(R.drawable.ic_action_heart_filled);
+        }
+
+        private void showUnfilledHeart() {
+            binding.ivLike.setImageResource(R.drawable.ic_action_heart);
+        }
+
+
+        private void setIfLiked(Post post, String currentLikes) {
+            if(isCurrentlyLiked)
+                showFilledHeart();
+
+            binding.tvNumLikes.setText(currentLikes);
+        }
+
+
+
+
+        private void setImages(Post post) {
             ParseFile image = post.getImage();
             ParseFile profilePic = (ParseFile) post.getUser().get(ProfileFragment.KEY_IMAGE);
 
@@ -106,19 +176,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                     .placeholder(R.drawable.ic_baseline_person_24)
                     .into(binding.ivPostImage);
 
-            String profileUrl="";
-            if(profilePic != null)
+            String profileUrl = "";
+            if (profilePic != null)
                 profileUrl = profilePic.getUrl();
             Glide.with(context).load(imageUrl).centerCrop()
                     .placeholder(R.drawable.ic_baseline_person_24)
                     .transform(new CircleCrop())
                     .into(binding.ivProfilePic);
-            // Timestamp
-            binding.tvCreatedAt.setText(post.getCreatedAt().toString());
-
-            // Listeners for username + profile pic
-            setListenerToUserProfile();
-
         }
 
         private void setListenerToUserProfile() {

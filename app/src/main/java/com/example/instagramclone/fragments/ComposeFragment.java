@@ -139,7 +139,10 @@ public class ComposeFragment extends Fragment {
                 Log.i(TAG, "Posted!");
                 Toast.makeText(getContext(), "Posted", Toast.LENGTH_SHORT).show();
                 binding.etDescription.setText("");
-                ((MainActivity) getContext()).hideProgressBar();
+                MainActivity mainActivity = ((MainActivity) getContext());
+                mainActivity.hideProgressBar();
+                mainActivity.setPostListener(null,MainActivity.feedFragment ,"null");
+
             }
         });
     }
