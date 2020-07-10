@@ -47,12 +47,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
 
     }
 
@@ -66,14 +60,13 @@ public class LoginActivity extends AppCompatActivity {
                     launchMainActivity();
                 } else {
                     Log.e(TAG, "Parse Log In exception", e);
-                    Toast.makeText(LoginActivity.this, "Could not sign in", Toast.LENGTH_SHORT);
+                    Toast.makeText(LoginActivity.this, "Could not sign in", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
     private void signUpUser(final String username, final String password) {
-        Toast.makeText(LoginActivity.this, "Sign up!", Toast.LENGTH_SHORT).show();
         Log.i(TAG,"in Sign up user");
         // Create the ParseUser
         final ParseUser user = new ParseUser();
