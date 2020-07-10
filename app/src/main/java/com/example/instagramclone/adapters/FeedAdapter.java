@@ -172,6 +172,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             String imageUrl = "";
             if (image != null) // in case of dummy posts
                 imageUrl = image.getUrl();
+
             Glide.with(context).load(imageUrl).centerCrop()
                     .placeholder(R.drawable.ic_baseline_person_24)
                     .into(binding.ivPostImage);
