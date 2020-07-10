@@ -108,8 +108,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
             setIfLiked(post, String.valueOf(numLikes));
 
-            final List<ParseUser> usersWhoLiked = post.getUsersWhoLiked();
-
             binding.ivLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
