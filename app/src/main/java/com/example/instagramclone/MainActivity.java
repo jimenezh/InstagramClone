@@ -23,6 +23,7 @@ import com.example.instagramclone.fragments.FeedFragment;
 import com.example.instagramclone.fragments.ProfileFragment;
 import com.example.instagramclone.models.Post;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import org.parceler.Parcels;
@@ -33,9 +34,9 @@ public class MainActivity extends AppCompatActivity implements FeedAdapter.PostA
     public static final String TAG = "MainActivity";
     final FragmentManager fragmentManager = getSupportFragmentManager();
     // Fragments for tab navigation
-    final FeedFragment feedFragment = new FeedFragment();
-    final ComposeFragment composeFragment = new ComposeFragment();
-    final ProfileFragment profileFragment = new ProfileFragment();
+    public final static FeedFragment feedFragment = new FeedFragment();
+    public final static ComposeFragment composeFragment = new ComposeFragment();
+    public final static ProfileFragment profileFragment = new ProfileFragment();
 
     ProgressBar miActionProgressItem;
 
@@ -80,16 +81,20 @@ public class MainActivity extends AppCompatActivity implements FeedAdapter.PostA
 
     @Override
     public void setPostListener(Object object, Fragment fragment, String type) {
-        Log.i(TAG, String.valueOf(object.getClass()));
-        // New fragment
-//        DetailFragment detailFragment = new DetailFragment();
 
-        // Pass post into new fragment
+        // Pass data into new fragment
+        if(object != null)
+            setArguments((ParseObject) object, fragment, type);
+        // Replace frame layout with PostDetails
+        fragmentManager.beginTransaction().replace(binding.flContainer.getId(),fragment).commit();
+    }
+
+    private void setArguments(ParseObject object, Fragment fragment, String type) {
         Bundle bundle = new Bundle();
 
         switch (type){
             case "Post":
-                bundle.putParcelable(Post.class.getSimpleName(),Parcels.wrap( (Post)  object));
+                bundle.putParcelable(Post.class.getSimpleName(), Parcels.wrap( (Post)  object));
                 break;
             case "User":
                 bundle.putParcelable(ParseUser.class.getSimpleName(),Parcels.wrap( (ParseUser)  object));
@@ -97,8 +102,6 @@ public class MainActivity extends AppCompatActivity implements FeedAdapter.PostA
         }
 
         fragment.setArguments(bundle);
-        // Replace frame layout with PostDetails
-        fragmentManager.beginTransaction().replace(binding.flContainer.getId(),fragment).commit();
     }
 
     @Override
