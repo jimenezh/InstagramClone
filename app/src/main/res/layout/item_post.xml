@@ -7,14 +7,6 @@
     android:layout_centerInParent="true"
     android:layout_centerHorizontal="true">
 
-    <ImageView
-        android:id="@+id/ivProfilePic"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
-
     <TextView
         android:id="@+id/tvAuthor"
         android:layout_width="wrap_content"
@@ -29,9 +21,28 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Author!" />
 
+
+    <ImageView
+        android:id="@+id/ivProfilePic"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvCreatedAt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/ivPostImage"
+        app:layout_constraintTop_toBottomOf="@+id/ivPostImage"
+        tools:text="Created At" />
+
     <ImageView
         android:id="@+id/ivPostImage"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="300dp"
         android:layout_marginTop="8dp"
         android:layout_weight="1"
@@ -40,15 +51,40 @@
         app:layout_constraintTop_toBottomOf="@+id/ivProfilePic"
         tools:srcCompat="@tools:sample/avatars" />
 
+    <ImageView
+        android:id="@+id/ivLike"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:tint="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/tvCreatedAt"
+        app:layout_constraintStart_toStartOf="@+id/tvCreatedAt"
+        app:layout_constraintTop_toBottomOf="@+id/tvCreatedAt"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_action_heart" />
 
     <TextView
-        android:id="@+id/tvCreatedAt"
+        android:id="@+id/tvNumLikes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        app:layout_constraintStart_toStartOf="@+id/ivPostImage"
-        app:layout_constraintTop_toBottomOf="@+id/ivPostImage"
-        tools:text="Created At" />
+        android:layout_marginStart="8dp"
+        android:text="0"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ivLike"
+        app:layout_constraintStart_toEndOf="@+id/ivLike"
+        app:layout_constraintTop_toTopOf="@+id/ivLike"
+        tools:text="14" />
+
+    <TextView
+        android:id="@+id/tvLikesText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="Likes"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvNumLikes"
+        app:layout_constraintStart_toEndOf="@+id/tvNumLikes"
+        app:layout_constraintTop_toTopOf="@+id/tvNumLikes" />
 
     <TextView
         android:id="@+id/tvDescription"
@@ -60,8 +96,8 @@
         android:textColor="#D8D8D8"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/ivPostImage"
-        app:layout_constraintTop_toBottomOf="@+id/tvCreatedAt"
+        app:layout_constraintStart_toStartOf="@+id/ivLike"
+        app:layout_constraintTop_toBottomOf="@+id/ivLike"
         tools:text="This is a very long description This is a very long descriptionThis is a very long descriptionThis is a very long descriptionThis is a very long descriptionThis is a very long description" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
