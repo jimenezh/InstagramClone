@@ -30,7 +30,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     Context context;
     List<Post> posts;
     public static final String TAG = "PostsAdapter";
-    private boolean isLiked;
+    private boolean isCurrentlyLiked;
 
     // Interface to access listener on
     public interface PostAdapterListener {
@@ -104,6 +104,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
             // Like setup
             numLikes = post.getNumberOfLikes();
+            isCurrentlyLiked = wasOriginallyLiked(post);
+
             setIfLiked(post, String.valueOf(numLikes));
 
             final List<ParseUser> usersWhoLiked = post.getUsersWhoLiked();
@@ -111,11 +113,39 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             binding.ivLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    isLiked = !isLiked;
-                    updateLikes(post, usersWhoLiked);
+                    // Let's say a post is liked
+                    isCurrentlyLiked = !isCurrentlyLiked;
+                    // Now we update from (originally unliked to liked
+                    updateLikes(post);
                 }
             });
 
+        }
+
+        private void updateLikes(Post post) {
+            if(wasOriginallyLiked(post)){
+                if(isCurrentlyLiked){
+                    showFilledHeart();
+                } else{
+                    numLikes--;
+                    showUnfilledHeart();
+                    post.removeUserFromLikes(ParseUser.getCurrentUser());
+                }
+            } else{
+                if(isCurrentlyLiked){
+                    numLikes++;
+                    showFilledHeart();
+                    post.addUserToLikes(ParseUser.getCurrentUser());
+                } else{
+                    showUnfilledHeart();
+                }
+            }
+
+            binding.tvNumLikes.setText(String.valueOf(numLikes));
+        }
+
+        private boolean wasOriginallyLiked(Post post) {
+            return post.didUserLikePost(ParseUser.getCurrentUser().getObjectId());
         }
 
         private void showFilledHeart() {
@@ -128,37 +158,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
 
         private void setIfLiked(Post post, String currentLikes) {
-            List<ParseUser> usersWhoLiked = post.getUsersWhoLiked();
-            if (usersWhoLiked == null) {
-                isLiked = false;
-            } else
-                isLiked = post.didUserLikePost(ParseUser.getCurrentUser());
+            if(isCurrentlyLiked)
+                showFilledHeart();
+
             binding.tvNumLikes.setText(currentLikes);
         }
 
 
-        private void updateLikes(Post post, List<ParseUser> usersWhoLiked) {
-            if (isLiked) {
-                showFilledHeart();
-                numLikes++;
-            } else {
-                showUnfilledHeart();
-                numLikes--;
-            }
 
-            binding.tvNumLikes.setText(String.valueOf(numLikes));
-
-            ParseUser currUser = ParseUser.getCurrentUser();
-            boolean originallyLiked = post.didUserLikePost(currUser);
-
-            // user unliked
-            if (originallyLiked && !isLiked) {
-                post.removeUserFromLikes(currUser);
-            } else if (!originallyLiked && isLiked) { // user liked
-                post.setNumLikes(currUser);
-
-            }
-        }
 
         private void setImages(Post post) {
             ParseFile image = post.getImage();
