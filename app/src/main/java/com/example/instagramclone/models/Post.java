@@ -5,12 +5,15 @@ import com.parse.ParseObject;
 import com.parse.ParseClassName;
 import com.parse.ParseUser;
 
+import java.lang.reflect.Array;
+
 @ParseClassName("Post")
 public class Post extends ParseObject {
     public static final String KEY_DESCRIPTION ="description";
     public static final String  KEY_IMAGE="image";
     public static final String KEY_USER="user";
     public static final String KEY_CREATED_AT="createdAt";
+    public static final String KEY_LIKES = "likes";
 
     public Post() {
     }
@@ -21,6 +24,7 @@ public class Post extends ParseObject {
 
     public void setDescription(String description){
         put(KEY_DESCRIPTION, description);
+        setNumLikes(null);
     }
 
     public ParseFile getImage(){
@@ -40,4 +44,16 @@ public class Post extends ParseObject {
         put(KEY_USER, user);
     }
 
+    public void setNumLikes(ParseUser[] numLikes){
+        put(KEY_LIKES, numLikes);
+    }
+
+    public ParseUser[] getUsersWhoLiked(){
+        return (ParseUser[]) get(KEY_LIKES);
+    }
+    public int getNumberOfLikes() {
+        if(getUsersWhoLiked() == null)
+            return 0;
+        return getUsersWhoLiked().length;
+    }
 }
