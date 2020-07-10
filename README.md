@@ -38,6 +38,7 @@ The following **additional** features are implemented:
 - Detailed view uses Fragment
 - GridView on User profile refreshes
 - User can enter email when signing up
+- Redirect to feed after posting picture
 
 
 ## Video Walkthrough
